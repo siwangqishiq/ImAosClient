@@ -1,23 +1,28 @@
 package com.xinlan.imclient;
 
-import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.multidex.MultiDexApplication;
-
-import com.xinlan.imsdk.core.CoreService;
-import com.xinlan.imsdk.util.ProcessUtil;
+import com.xinlan.imsdk.IMClient;
 
 public class ImApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        if(ProcessUtil.isMainProcess(this)){//主进程
-            startCoreService();
-        }else{ // core 进程
-        }
+        IMClient.getInstance().init(this);
     }
 
-    private void startCoreService(){
-        Intent it = new Intent(this, CoreService.class);
-        startService(it);
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
     }
 }//end class
