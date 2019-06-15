@@ -5,6 +5,9 @@ import android.widget.TextView;
 
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
+import com.xinlan.imsdk.http.HttpRequestHelper;
+
+import java.util.HashMap;
 
 public class MainActivity extends TActivity {
     private TextView mText;
@@ -14,6 +17,12 @@ public class MainActivity extends TActivity {
         setContentView(R.layout.activity_main);
 
         mText = findViewById(R.id.text);
+
+
+        HashMap<String,Object> params = new HashMap<String , Object>();
+        params.put("account","siwangqishiq");
+        params.put("pwd","111111");
+        HttpRequestHelper.sendPostRequest("createUser" , params);
     }
 
     @Override
