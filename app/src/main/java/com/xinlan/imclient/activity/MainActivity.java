@@ -1,6 +1,8 @@
 package com.xinlan.imclient.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.xinlan.imclient.R;
@@ -18,11 +20,13 @@ public class MainActivity extends TActivity {
 
         mText = findViewById(R.id.text);
 
-
-        HashMap<String,Object> params = new HashMap<String , Object>();
-        params.put("account","siwangqishiq");
-        params.put("pwd","111111");
-        HttpRequestHelper.sendPostRequest("createUser" , params);
+        findViewById(R.id.test_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it  = new Intent(MainActivity.this , SubActivity.class);
+                MainActivity.this.startActivity(it);
+            }
+        });
     }
 
     @Override

@@ -52,6 +52,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.SubActivity">
+        </activity>
+
         <service
             android:name="com.xinlan.imsdk.core.CoreService"
             android:process=":core" />

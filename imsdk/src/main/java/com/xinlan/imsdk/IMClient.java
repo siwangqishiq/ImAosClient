@@ -1,5 +1,7 @@
 package com.xinlan.imsdk;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.os.RemoteException;
 
 import com.xinlan.imsdk.core.CoreService;
 import com.xinlan.imsdk.core.Remote;
+import com.xinlan.imsdk.http.HttpRequestHelper;
 import com.xinlan.imsdk.util.LogUtil;
 import com.xinlan.imsdk.util.ProcessUtil;
 
@@ -50,9 +53,46 @@ public class IMClient {
         return instance;
     }
 
-    public void init(final Context ctx){
+    public void init(final Application ctx){
         if(ProcessUtil.isMainProcess(ctx)){//主UI进程
             startCoreService(ctx);
+
+            ctx.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+                @Override
+                public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+                }
+
+                @Override
+                public void onActivityStarted(Activity activity) {
+
+                }
+
+                @Override
+                public void onActivityResumed(Activity activity) {
+
+                }
+
+                @Override
+                public void onActivityPaused(Activity activity) {
+
+                }
+
+                @Override
+                public void onActivityStopped(Activity activity) {
+
+                }
+
+                @Override
+                public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+                }
+
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    HttpRequestHelper.removeCallback(activity , null);
+                }
+            });
         }else{ // core 进程
 
         }
