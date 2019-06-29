@@ -33,6 +33,8 @@ public class IMClient {
     private RemoteHandler mActivityHandler;
     private Messenger mActivityMessenger;
 
+    private String account;
+
     private IMClient(){
         initClient();
     }
@@ -161,5 +163,13 @@ public class IMClient {
         public void onNullBinding(ComponentName name) {
             LogUtil.log("RemoteConListener onNullBinding " + name);
         }
+    }
+
+    public boolean isLogin(){
+        return false;
+    }
+
+    public String getAccount(){
+        return account;
     }
 } // end class
