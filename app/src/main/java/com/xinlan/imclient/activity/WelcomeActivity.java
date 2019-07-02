@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
+import com.xinlan.imsdk.IMClient;
 
 /**
  *
@@ -15,10 +16,21 @@ public class WelcomeActivity extends TActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-
+        if(IMClient.getInstance().isLogin()){
+            skipToMain(null);
+        }else{
+            skipLogin();
+        }
     }
 
     private void skipToMain(Intent it) {
+
+    }
+
+    /**
+     * 跳转至登录页
+     */
+    private void skipLogin(){
 
     }
 

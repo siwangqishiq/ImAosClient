@@ -7,9 +7,6 @@ import android.widget.TextView;
 
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
-import com.xinlan.imsdk.http.HttpRequestHelper;
-
-import java.util.HashMap;
 
 public class MainActivity extends TActivity {
     private TextView mText;

@@ -1,13 +1,12 @@
 package com.xinlan.imclient.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
-import com.xinlan.imsdk.http.HttpRequestHelper;
+import com.xinlan.imsdk.http.HttpRequestClient;
 import com.xinlan.imsdk.model.User;
 
 public class SubActivity extends TActivity {
@@ -28,8 +27,8 @@ public class SubActivity extends TActivity {
     }
 
     private void sendRequest(){
-        HttpRequestHelper.sendPostRequest("getuser", null, this,
-                new HttpRequestHelper.ICallback<User>() {
+        HttpRequestClient.sendPostRequest("getuser", null, this,
+                new HttpRequestClient.ICallback<User>() {
                     @Override
                     public void onError(int errorCode, Exception e) {
                         mText.setText("Error = " +errorCode);

@@ -16,7 +16,7 @@ import android.os.RemoteException;
 
 import com.xinlan.imsdk.core.CoreService;
 import com.xinlan.imsdk.core.Remote;
-import com.xinlan.imsdk.http.HttpRequestHelper;
+import com.xinlan.imsdk.http.HttpRequestClient;
 import com.xinlan.imsdk.util.LogUtil;
 import com.xinlan.imsdk.util.ProcessUtil;
 
@@ -92,7 +92,7 @@ public class IMClient {
 
                 @Override
                 public void onActivityDestroyed(Activity activity) {
-                    HttpRequestHelper.removeCallback(activity , null);
+                    HttpRequestClient.removeCallback(activity , null);
                 }
             });
         }else{ // core 进程

@@ -25,7 +25,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class HttpRequestHelper {
+public class HttpRequestClient {
     public static final String UA = "User-Agent";
     public static final String UA_VALUE = "Android;xinlan_imclient";
     public static final String TOKEN = "token";
