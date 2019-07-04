@@ -1,4 +1,4 @@
-package com.xinlan.imclient.activity;
+package com.xinlan.imsdk.core;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

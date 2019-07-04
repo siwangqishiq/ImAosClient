@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
+import com.xinlan.imsdk.core.TActivity;
 
 public class MainActivity extends TActivity {
     private TextView mText;

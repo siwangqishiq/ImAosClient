@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
+import com.xinlan.imsdk.core.TActivity;
 import com.xinlan.imsdk.http.HttpRequestClient;
 import com.xinlan.imsdk.model.User;
 

@@ -4,4 +4,9 @@
     <string name="username">用户名</string>
     <string name="password">密码</string>
     <string name="create_new_account">注册新用户</string>
+    <string name="register">注册</string>
+    <string name="submit">提交</string>
+
+    <string name="male">男</string>
+    <string name="female">女</string>
 </resources>

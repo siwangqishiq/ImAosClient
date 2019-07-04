@@ -3,4 +3,5 @@
     <dimen name="login_horizontal_margin">16dp</dimen>
     <dimen name="login_vertical_margin">32dp</dimen>
     <dimen name="text_size_normal">20sp</dimen>
+    <dimen name="text_size_small">16sp</dimen>
 </resources>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
 import com.xinlan.imsdk.IMClient;
+import com.xinlan.imsdk.core.TActivity;
 
 /**
  *
