@@ -80,7 +80,7 @@ public class CoreService extends Service {
             builder = new Notification.Builder(this, channelId);
             setNotificationChannel(channelId);
         }
-        builder.setSmallIcon(options.iconId).setContentText("running...").setOngoing(true)
+        builder.setSmallIcon(options.iconId).setContentText("Hello World!").setOngoing(true)
                 .setContentTitle("聊天服务").setContentIntent(pendIntent);
         startForeground(NOTIFICATION_ID, builder.build());
     }

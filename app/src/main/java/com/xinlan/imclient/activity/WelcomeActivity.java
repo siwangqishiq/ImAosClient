@@ -24,17 +24,17 @@ public class WelcomeActivity extends TActivity {
     }
 
     private void skipToMain(Intent it) {
-
     }
 
     /**
      * 跳转至登录页
      */
     private void skipLogin(){
-
+        LoginActivity.start(this);
+        finish();
     }
 
     @Override
-    void onReceivedMsg(Bean bean) {
+    public void onReceivedMsg(Bean bean) {
     }
 }//end class

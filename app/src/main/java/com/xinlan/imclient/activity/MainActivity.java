@@ -20,14 +20,14 @@ public class MainActivity extends TActivity {
         findViewById(R.id.test_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it  = new Intent(MainActivity.this , SubActivity.class);
+                Intent it  = new Intent(MainActivity.this , SubTestActivity.class);
                 MainActivity.this.startActivity(it);
             }
         });
     }
 
     @Override
-    void onReceivedMsg(Bean bean) {
+    public void onReceivedMsg(Bean bean) {
         mText.setText(bean.content);
     }
 }

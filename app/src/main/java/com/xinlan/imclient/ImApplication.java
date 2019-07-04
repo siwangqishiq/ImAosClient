@@ -15,6 +15,7 @@ public class ImApplication extends MultiDexApplication {
         IMClient.Options option = new IMClient.Options();
         option.enterClass = WelcomeActivity.class;
         option.iconId = R.drawable.ic_launcher;
+
         IMClient.getInstance().init(this , option);
         if(ProcessUtil.isMainProcess(this)){
             initApplication();

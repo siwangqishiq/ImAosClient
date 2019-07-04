@@ -34,12 +34,11 @@ public class IMClient {
     private String account;
 
     public static class Options{
-        public Class enterClass;
+        public Class<? extends Activity> enterClass;
         public int iconId;
     }
 
     private Options options;
-
     private IMClient(){
         initClient();
     }
@@ -112,6 +111,9 @@ public class IMClient {
 
     public void startCoreService(Context context){
         if(ProcessUtil.isServiceRunning(context , CoreService.NAME))
+            return;
+
+        if(!isLogin())//未登录
             return;
 
         Intent it = new Intent(context, CoreService.class);

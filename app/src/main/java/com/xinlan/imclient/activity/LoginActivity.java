@@ -1,5 +1,7 @@
 package com.xinlan.imclient.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -14,6 +16,12 @@ import com.xinlan.imsdk.model.User;
  * 登录界面
  */
 public class LoginActivity extends TActivity {
+
+    public static void start(Activity activity){
+        Intent it = new Intent(activity , LoginActivity.class);
+        activity.startActivity(it);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +31,7 @@ public class LoginActivity extends TActivity {
     }
 
     @Override
-    void onReceivedMsg(Bean bean) {
+    public void onReceivedMsg(Bean bean) {
 
     }
 }//end class

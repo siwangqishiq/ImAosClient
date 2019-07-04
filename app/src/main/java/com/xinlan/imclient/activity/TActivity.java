@@ -29,5 +29,5 @@ public abstract class TActivity extends AppCompatActivity {
         onReceivedMsg(bean);
     }
 
-    abstract void onReceivedMsg(Bean bean);
+    public abstract void onReceivedMsg(Bean bean);
 }//end class

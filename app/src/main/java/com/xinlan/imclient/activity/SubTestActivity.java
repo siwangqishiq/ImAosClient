@@ -9,7 +9,7 @@ import com.xinlan.imsdk.Bean;
 import com.xinlan.imsdk.http.HttpRequestClient;
 import com.xinlan.imsdk.model.User;
 
-public class SubActivity extends TActivity {
+public class SubTestActivity extends TActivity {
     private TextView mText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,6 @@ public class SubActivity extends TActivity {
     }
 
     @Override
-    void onReceivedMsg(Bean bean) {
+    public void onReceivedMsg(Bean bean) {
     }
 }
