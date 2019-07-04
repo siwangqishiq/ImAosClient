@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,7 +16,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 
 import com.xinlan.imsdk.core.CoreService;
-import com.xinlan.imsdk.core.Remote;
 import com.xinlan.imsdk.http.HttpRequestClient;
 import com.xinlan.imsdk.util.LogUtil;
 import com.xinlan.imsdk.util.ProcessUtil;
@@ -23,17 +23,22 @@ import com.xinlan.imsdk.util.ProcessUtil;
 import org.greenrobot.eventbus.EventBus;
 
 public class IMClient {
-    static {
-        Remote r = new Remote();
-    }
     private static IMClient instance;
 
-    private  RemoteConListener mConListener;
+    private RemoteConListener mConListener;
     private Messenger mSerivceMessenger;
+    private Messenger mUIMessenger;
     private RemoteHandler mActivityHandler;
-    private Messenger mActivityMessenger;
+
 
     private String account;
+
+    public static class Options{
+        public Class enterClass;
+        public int iconId;
+    }
+
+    private Options options;
 
     private IMClient(){
         initClient();
@@ -55,7 +60,12 @@ public class IMClient {
         return instance;
     }
 
-    public void init(final Application ctx){
+    public Options getOptions(){
+        return options;
+    }
+
+    public void init(final Application ctx , Options op){
+        options = op;
         if(ProcessUtil.isMainProcess(ctx)){//主UI进程
             startCoreService(ctx);
 
@@ -100,9 +110,17 @@ public class IMClient {
         }
     }
 
-    private void startCoreService(Context context){
+    public void startCoreService(Context context){
+        if(ProcessUtil.isServiceRunning(context , CoreService.NAME))
+            return;
+
         Intent it = new Intent(context, CoreService.class);
-        context.startService(it);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(it);
+        }else{
+            context.startService(it);
+        }
         // bind
         context.bindService(it , mConListener , Context.BIND_AUTO_CREATE);
     }
@@ -135,11 +153,11 @@ public class IMClient {
             if(mSerivceMessenger == null)
                 return;
 
-            mActivityMessenger = new Messenger(mActivityHandler);
+            mUIMessenger = new Messenger(mActivityHandler);
 
             Message buildRemoteMsg = new Message();
             buildRemoteMsg.what = CoreService.REMOTE_MESSAGE_BIND;
-            buildRemoteMsg.replyTo = mActivityMessenger;
+            buildRemoteMsg.replyTo = mUIMessenger;
             try {
                 mSerivceMessenger.send(buildRemoteMsg);
             } catch (RemoteException e) {
@@ -150,7 +168,7 @@ public class IMClient {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             LogUtil.log("RemoteConListener onServiceDisconnected " + name);
-            mActivityMessenger = null;
+            mUIMessenger = null;
             mSerivceMessenger = null;
         }
 
