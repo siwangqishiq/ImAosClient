@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.xinlan.imclient.ui.CustomDialog;
 import com.xinlan.imclient.util.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * 选取图片 从相册 或 相机拍摄
@@ -67,14 +69,18 @@ public class PickerImageHelper {
     }
 
     private void takePhoto() {
-        Intent intent = new Intent();
-        // 指定开启系统相机的Action
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photoFile = FileUtils.genEditFile();;
-        if (photoFile != null) {
-            mPhotoUri = Uri.fromFile(photoFile);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoUri);
-            mContext.startActivityForResult(intent, RequestCode.RESULT_TAKE_PHOTO);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = null;
+        try {
+            photoFile = FileUtils.createImageFile(mContext);
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(mContext,
+                        "com.xinlan.imclient.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                mContext.startActivityForResult(takePictureIntent, RequestCode.RESULT_TAKE_PHOTO);
+            }
+        } catch (IOException ex) {
         }
     }
 
