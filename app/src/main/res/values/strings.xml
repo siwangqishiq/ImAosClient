@@ -9,4 +9,6 @@
 
     <string name="male">男</string>
     <string name="female">女</string>
+    <string name="picker_from_ablum">从相册选择</string>
+    <string name="picker_from_camera">拍摄照片</string>
 </resources>

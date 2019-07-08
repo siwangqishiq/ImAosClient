@@ -27,6 +27,7 @@ public class LoginActivity extends TActivity {
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle(R.string.login);
     }
 
     @Override

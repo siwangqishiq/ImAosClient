@@ -3,15 +3,17 @@ package com.xinlan.imclient.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.xinlan.imclient.R;
-import com.xinlan.imclient.widget.CustomDialog;
+import com.xinlan.imclient.ui.CustomDialog;
+import com.xinlan.imclient.widget.PickerImageHelper;
 import com.xinlan.imsdk.Bean;
 import com.xinlan.imsdk.core.TActivity;
 
@@ -27,6 +29,8 @@ public class RegisterActivity extends TActivity implements View.OnClickListener 
 
     private ImageView mAvatarView;
 
+    private PickerImageHelper mPickerHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +43,14 @@ public class RegisterActivity extends TActivity implements View.OnClickListener 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(R.string.register);
     }
 
     private void initView(){
         mAvatarView = findViewById(R.id.avatar);
         mAvatarView.setOnClickListener(this);
+
+        mPickerHelper = new PickerImageHelper(this);
     }
 
     @Override
@@ -64,26 +71,25 @@ public class RegisterActivity extends TActivity implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.avatar:
-                selectAvatar();
+            case R.id.avatar://选择头像
+                mPickerHelper.selectAvatar();
                 break;
         }//end switch
     }
 
-    public void selectAvatar(){
-        final CustomDialog dialog = new CustomDialog();
-        dialog.addItem("从相册选择", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(RegisterActivity.this,"从相册选择",Toast.LENGTH_SHORT).show();
-            }
-        });
-        dialog.addItem("拍摄", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(RegisterActivity.this,"拍摄",Toast.LENGTH_SHORT).show();
-            }
-        });
-        dialog.show(getSupportFragmentManager() , "dialog");
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(mPickerHelper != null){
+            mPickerHelper.onRequestPermissionsResult(requestCode , permissions , grantResults);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(mPickerHelper != null){
+            mPickerHelper.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }//end class

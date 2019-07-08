@@ -1,4 +1,4 @@
-package com.xinlan.imclient.widget;
+package com.xinlan.imclient.ui;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -26,8 +26,10 @@ public class CustomDialog  extends DialogFragment {
         items.toArray(itemStrs);
         builder.setItems(itemStrs, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
+            public void onClick(final DialogInterface dialog,final int which) {
+                if(which >= 0 && which < listeners.size()){
+                    listeners.get(which).onClick(getView());
+                }
             }
         });
         return builder.create();
