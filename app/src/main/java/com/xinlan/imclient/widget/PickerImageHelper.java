@@ -8,20 +8,18 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
-
 import com.xinlan.imclient.R;
-import com.xinlan.imclient.activity.RegisterActivity;
 import com.xinlan.imclient.config.RequestCode;
 import com.xinlan.imclient.ui.CustomDialog;
 import com.xinlan.imclient.util.FileUtils;
+import com.xinlan.imsdk.http.HttpClient;
+import com.xinlan.imsdk.http.IUpload;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +30,7 @@ import java.io.IOException;
 public class PickerImageHelper {
     private static final String TAG = PickerImageHelper.class.getSimpleName();
     private FragmentActivity mContext;
-    private Uri mPhotoUri;
+    private String mTakePhotoFilePath;
 
     public PickerImageHelper(FragmentActivity ctx) {
         mContext = ctx;
@@ -75,9 +73,9 @@ public class PickerImageHelper {
             photoFile = FileUtils.createImageFile(mContext);
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(mContext,
-                        "com.xinlan.imclient.fileprovider",
-                        photoFile);
+                        "com.xinlan.imclient.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                mTakePhotoFilePath = photoFile.getAbsolutePath();
                 mContext.startActivityForResult(takePictureIntent, RequestCode.RESULT_TAKE_PHOTO);
             }
         } catch (IOException ex) {
@@ -98,9 +96,29 @@ public class PickerImageHelper {
         if(resultCode != Activity.RESULT_OK)
             return;
 
-        if(requestCode == RequestCode.RESULT_TAKE_PHOTO && mPhotoUri != null){//拍摄照片返回
-            File file = new File(mPhotoUri.getPath());
+        if(requestCode == RequestCode.RESULT_TAKE_PHOTO  && !TextUtils.isEmpty(mTakePhotoFilePath)){//拍摄照片返回
+            File file = new File(mTakePhotoFilePath);
             System.out.println("file size = " +file.length() +"   " +file.getAbsolutePath());
+
+            HttpClient.getUploader().uploadImage(file , new IUpload.Callback(){
+
+                @Override
+                public void onSuccess(String uplodaUrl, String filepath) {
+                    System.out.println("上传成功 = " +uplodaUrl);
+                }
+
+                @Override
+                public void onError(int code, String filepath) {
+                    System.out.println("失败 = " +filepath);
+                }
+            });
+
+            HttpClient.getUploader().observerUploadProgress(new IUpload.UpdateProgress(){
+                @Override
+                public void onUpdate(String filepath, long current, long total) {
+                    System.out.println(current + " / " + total);
+                }
+            },true);
         }
     }
 

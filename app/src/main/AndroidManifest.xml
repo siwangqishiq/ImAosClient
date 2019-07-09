@@ -89,6 +89,8 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.xinlan.imclient.receiver" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
     </application>

@@ -25,7 +25,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class HttpRequestClient {
+public class HttpClient {
     public static final String UA = "User-Agent";
     public static final String UA_VALUE = "Android;xinlan_imclient";
     public static final String TOKEN = "token";
@@ -34,6 +34,7 @@ public class HttpRequestClient {
 
     public static OkHttpClient client;
 
+    private static IUpload uploader;
     static {
         client = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(false)
@@ -41,6 +42,7 @@ public class HttpRequestClient {
                 .readTimeout(TIMEOUT, TimeUnit.MILLISECONDS) //读取超时
                 .writeTimeout(TIMEOUT, TimeUnit.MILLISECONDS) //写超时
                 .build();
+        //uploader = new UploadImpl();
     }
 
     private static Map<Context, Set<ICallback>> callbackRecords = new HashMap<Context, Set<ICallback>>();
@@ -166,5 +168,12 @@ public class HttpRequestClient {
             return;
         builder.addHeader(UA, UA_VALUE);
         builder.addHeader(TOKEN, null);
+    }
+
+    public static IUpload getUploader(){
+        if(uploader == null){
+            uploader = new UploadImpl();
+        }
+        return uploader;
     }
 }

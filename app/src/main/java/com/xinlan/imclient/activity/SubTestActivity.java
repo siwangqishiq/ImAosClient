@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
 import com.xinlan.imsdk.core.TActivity;
-import com.xinlan.imsdk.http.HttpRequestClient;
+import com.xinlan.imsdk.http.HttpClient;
 import com.xinlan.imsdk.model.User;
 
 public class SubTestActivity extends TActivity {
@@ -28,8 +28,8 @@ public class SubTestActivity extends TActivity {
     }
 
     private void sendRequest(){
-        HttpRequestClient.sendPostRequest("getuser", null, this,
-                new HttpRequestClient.ICallback<User>() {
+        HttpClient.sendPostRequest("getuser", null, this,
+                new HttpClient.ICallback<User>() {
                     @Override
                     public void onError(int errorCode, Exception e) {
                         mText.setText("Error = " +errorCode);

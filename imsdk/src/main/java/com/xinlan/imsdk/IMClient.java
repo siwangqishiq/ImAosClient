@@ -16,7 +16,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 
 import com.xinlan.imsdk.core.CoreService;
-import com.xinlan.imsdk.http.HttpRequestClient;
+import com.xinlan.imsdk.http.HttpClient;
 import com.xinlan.imsdk.util.LogUtil;
 import com.xinlan.imsdk.util.ProcessUtil;
 
@@ -29,9 +29,8 @@ public class IMClient {
     private Messenger mSerivceMessenger;
     private Messenger mUIMessenger;
     private RemoteHandler mActivityHandler;
-
-
     private String account;
+
 
     public static class Options{
         public Class<? extends Activity> enterClass;
@@ -101,7 +100,7 @@ public class IMClient {
 
                 @Override
                 public void onActivityDestroyed(Activity activity) {
-                    HttpRequestClient.removeCallback(activity , null);
+                    HttpClient.removeCallback(activity , null);
                 }
             });
         }else{ // core 进程
