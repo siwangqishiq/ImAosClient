@@ -14,12 +14,16 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ProgressBar;
+
 import com.xinlan.imclient.R;
+import com.xinlan.imclient.activity.SelectAblumActivity;
 import com.xinlan.imclient.config.RequestCode;
 import com.xinlan.imclient.ui.CustomDialog;
 import com.xinlan.imclient.util.FileUtils;
 import com.xinlan.imsdk.http.HttpClient;
 import com.xinlan.imsdk.http.IUpload;
+import com.xinlan.imsdk.ui.UrlImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,8 +36,13 @@ public class PickerImageHelper {
     private FragmentActivity mContext;
     private String mTakePhotoFilePath;
 
+    private UrlImageView mUrlImageView;
+    private ProgressBar mLoadingView;
+
     public PickerImageHelper(FragmentActivity ctx) {
         mContext = ctx;
+        mUrlImageView = mContext.findViewById(R.id.avatar);
+        mLoadingView = mContext.findViewById(R.id.loading_view);
     }
 
     public void selectAvatar() {
@@ -82,13 +91,28 @@ public class PickerImageHelper {
         }
     }
 
-    public void pickerFromAblum() {
+    /**
+     * 打开相册
+     */
+    private void openAblum(){
+        SelectAblumActivity.startForResult(mContext , RequestCode.RESULT_OPEN_ABLUM);
+    }
 
+    public void pickerFromAblum() {
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(mContext, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    RequestCode.PERMISSION_SELCT_ABLUM);
+        }else{
+            openAblum();
+        }
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if(requestCode == RequestCode.PERMISSION_TAKE_PHOTO && grantAllPermissions(grantResults) ){
             takePhoto();
+        }else if(requestCode == RequestCode.PERMISSION_SELCT_ABLUM && grantAllPermissions(grantResults)){
+            openAblum();
         }
     }
 
@@ -98,43 +122,50 @@ public class PickerImageHelper {
 
         if(requestCode == RequestCode.RESULT_TAKE_PHOTO  && !TextUtils.isEmpty(mTakePhotoFilePath)){//拍摄照片返回
             File file = new File(mTakePhotoFilePath);
-            System.out.println("file size = " +file.length() +"   " +file.getAbsolutePath());
+            //System.out.println("file size = " +file.length() +"   " +file.getAbsolutePath());
 
+            if(mLoadingView != null){
+                mLoadingView.setVisibility(View.VISIBLE);
+            }
             HttpClient.getUploader().uploadImage(file , new IUpload.Callback(){
-
                 @Override
                 public void onSuccess(String uplodaUrl, String filepath) {
-                    System.out.println("上传成功 = " +uplodaUrl);
+                    //System.out.println("上传成功 = " +uplodaUrl);
+                    if(mUrlImageView != null){
+                        mUrlImageView.loadImageThumb(uplodaUrl, new UrlImageView.ILoadListener() {
+                            @Override
+                            public void onSuccess() {
+                                if(mLoadingView != null){
+                                    mLoadingView.setVisibility(View.GONE);
+                                }
+                            }
+
+                            @Override
+                            public void onFailed() {
+                                if(mLoadingView != null){
+                                    mLoadingView.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
                 }
 
                 @Override
                 public void onError(int code, String filepath) {
-                    System.out.println("失败 = " +filepath);
+                    //System.out.println("失败 = " +filepath);
+                    if(mLoadingView != null){
+                        mLoadingView.setVisibility(View.GONE);
+                    }
                 }
             });
 
             HttpClient.getUploader().observerUploadProgress(new IUpload.UpdateProgress(){
                 @Override
                 public void onUpdate(String filepath, long current, long total) {
-                    System.out.println(current + " / " + total);
+                    //System.out.println(current + " / " + total);
                 }
             },true);
         }
-    }
-
-    /**
-     * 根据文件Uri获取路径
-     */
-    public static String getFilePathByFileUri(Context context, Uri uri) {
-        String filePath = null;
-        Cursor cursor = context.getContentResolver().query(uri, null, null,
-                null, null);
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(cursor
-                    .getColumnIndex(MediaStore.Images.Media.DATA));
-        }
-        cursor.close();
-        return filePath;
     }
 
     private static boolean grantAllPermissions(int[] grantResults){

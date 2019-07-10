@@ -29,5 +29,9 @@ public abstract class TActivity extends AppCompatActivity {
         onReceivedMsg(bean);
     }
 
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+    }
+
     public abstract void onReceivedMsg(Bean bean);
 }//end class

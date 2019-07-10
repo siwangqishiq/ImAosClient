@@ -2,6 +2,8 @@ package com.xinlan.imsdk;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +18,14 @@ import android.os.Messenger;
 import android.os.RemoteException;
 
 import com.xinlan.imsdk.core.CoreService;
+import com.xinlan.imsdk.core.KeepJobService;
 import com.xinlan.imsdk.http.HttpClient;
 import com.xinlan.imsdk.util.LogUtil;
 import com.xinlan.imsdk.util.ProcessUtil;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.concurrent.TimeUnit;
 
 public class IMClient {
     private static IMClient instance;
@@ -103,17 +108,37 @@ public class IMClient {
                     HttpClient.removeCallback(activity , null);
                 }
             });
+
+            scheduleJob(ctx);
         }else{ // core 进程
 
         }
+    }
+
+    private void scheduleJob(Context context){
+        if(context == null)
+            return;
+
+        ComponentName component = new ComponentName(context , KeepJobService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(KeepJobService.JOB_ID, component);
+        builder.setMinimumLatency(1000)
+                .setPersisted(true)
+                .setBackoffCriteria(TimeUnit.MINUTES.toMillis(10), JobInfo.BACKOFF_POLICY_LINEAR);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        }
+
+        JobScheduler tm = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        int result = tm.schedule(builder.build());
+        System.out.println("schduler = " + result +"  " +(JobScheduler.RESULT_SUCCESS == result));
     }
 
     public void startCoreService(Context context){
         if(ProcessUtil.isServiceRunning(context , CoreService.NAME))
             return;
 
-        if(!isLogin())//未登录
-            return;
+//        if(!isLogin())//未登录
+//            return;
 
         Intent it = new Intent(context, CoreService.class);
 

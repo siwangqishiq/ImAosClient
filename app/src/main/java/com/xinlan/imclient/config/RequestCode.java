@@ -6,4 +6,5 @@ public final class RequestCode {
 
 
     public static final int RESULT_TAKE_PHOTO = 1;
+    public static final int RESULT_OPEN_ABLUM = 2;
 }//end class
