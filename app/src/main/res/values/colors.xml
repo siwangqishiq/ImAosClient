@@ -5,4 +5,7 @@
     <color name="colorAccent">#B3E5FC</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorError">#D8000C</color>
+    <color name="gray">#f3eeeb</color>
+    <color name="drak_gray">#133337</color>
+    <color name="half_drak_gray">#7f133337</color>
 </resources>

@@ -121,51 +121,55 @@ public class PickerImageHelper {
             return;
 
         if(requestCode == RequestCode.RESULT_TAKE_PHOTO  && !TextUtils.isEmpty(mTakePhotoFilePath)){//拍摄照片返回
-            File file = new File(mTakePhotoFilePath);
-            //System.out.println("file size = " +file.length() +"   " +file.getAbsolutePath());
-
-            if(mLoadingView != null){
-                mLoadingView.setVisibility(View.VISIBLE);
-            }
-            HttpClient.getUploader().uploadImage(file , new IUpload.Callback(){
-                @Override
-                public void onSuccess(String uplodaUrl, String filepath) {
-                    //System.out.println("上传成功 = " +uplodaUrl);
-                    if(mUrlImageView != null){
-                        mUrlImageView.loadImageThumb(uplodaUrl, new UrlImageView.ILoadListener() {
-                            @Override
-                            public void onSuccess() {
-                                if(mLoadingView != null){
-                                    mLoadingView.setVisibility(View.GONE);
-                                }
-                            }
-
-                            @Override
-                            public void onFailed() {
-                                if(mLoadingView != null){
-                                    mLoadingView.setVisibility(View.GONE);
-                                }
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onError(int code, String filepath) {
-                    //System.out.println("失败 = " +filepath);
-                    if(mLoadingView != null){
-                        mLoadingView.setVisibility(View.GONE);
-                    }
-                }
-            });
-
-            HttpClient.getUploader().observerUploadProgress(new IUpload.UpdateProgress(){
-                @Override
-                public void onUpdate(String filepath, long current, long total) {
-                    //System.out.println(current + " / " + total);
-                }
-            },true);
+            uploadLocalFile(mTakePhotoFilePath);
+        }else if(requestCode == RequestCode.RESULT_OPEN_ABLUM && data != null){
+            final String path = data.getStringExtra(SelectAblumActivity.RESULT_PATH);
+            uploadLocalFile(path);
         }
+    }
+
+    private void uploadLocalFile(final String filepath){
+        if(TextUtils.isEmpty(filepath))
+            return;
+        File file = new File(filepath);
+        if(!file.exists())
+            return;
+        //System.out.println("file size = " +file.length() +"   " +file.getAbsolutePath());
+
+        if(mLoadingView != null){
+            mLoadingView.setVisibility(View.VISIBLE);
+        }
+        HttpClient.getUploader().uploadImage(file , new IUpload.Callback(){
+            @Override
+            public void onSuccess(String uplodaUrl, String filepath) {
+                //System.out.println("上传成功 = " +uplodaUrl);
+                if(mUrlImageView != null){
+                    mUrlImageView.loadImageThumb(uplodaUrl, new UrlImageView.ILoadListener() {
+                        @Override
+                        public void onSuccess() {
+                            if(mLoadingView != null){
+                                mLoadingView.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            if(mLoadingView != null){
+                                mLoadingView.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(int code, String filepath) {
+                //System.out.println("失败 = " +filepath);
+                if(mLoadingView != null){
+                    mLoadingView.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private static boolean grantAllPermissions(int[] grantResults){

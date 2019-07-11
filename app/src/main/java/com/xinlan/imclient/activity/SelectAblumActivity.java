@@ -5,17 +5,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.xinlan.imclient.R;
-import com.xinlan.imclient.util.ToastUtil;
+import com.xinlan.imclient.fragment.AblumSelectItemFragment;
+import com.xinlan.imclient.model.AblumImageItem;
 import com.xinlan.imsdk.Bean;
 import com.xinlan.imsdk.core.TActivity;
 
@@ -23,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SelectAblumActivity extends TActivity {
+    public static final String RESULT_PATH = "path";
+    public static final String RESULT_SIZE = "size";
+
+    private static final String BUCKET_ID = "bucket_id";
 
     public static void startForResult(Activity context, int requestCode) {
         Intent it = new Intent(context, SelectAblumActivity.class);
@@ -33,11 +31,31 @@ public class SelectAblumActivity extends TActivity {
     @Override
     protected void onCreate(final Bundle bundle) {
         super.onCreate(bundle);
-        Fragment newFragment = new ImageFolderFragment();
+        Fragment newFragment = new FolderImageFragment();
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction();
         transaction.replace(android.R.id.content, newFragment);
         transaction.commit();
+    }
+
+    public void showBucket(final int bucketId) {
+        Bundle b = new Bundle();
+        b.putInt(BUCKET_ID, bucketId);
+        Fragment f = new ImagesFragment();
+        f.setArguments(b);
+        getSupportFragmentManager().beginTransaction()
+                .replace(android.R.id.content, f).addToBackStack(null).commit();
+    }
+
+    public void selectImage(final AblumImageItem item){
+        if(item == null)
+            return;
+
+        Intent result = new Intent();
+        result.putExtra(RESULT_PATH, item.path);
+        result.putExtra(RESULT_SIZE, item.size);
+        setResult(RESULT_OK, result);
+        finish();
     }
 
     @Override
@@ -45,97 +63,68 @@ public class SelectAblumActivity extends TActivity {
 
     }
 
-    public static class Item {
-        String name;
-        String path;
-        String token;
-        long size;
-        int id;
-        int images;
-
-        public Item(String path, String name, String token, int id) {
-            this.path = path;
-            this.token = token;
-            this.name = name;
-            this.id = id;
-        }
-    }
-
-    public static class ImageFolderFragment extends Fragment {
-        private RecyclerView mGirdView;
-
+    public static class FolderImageFragment extends AblumSelectItemFragment{
         @Override
-        public View onCreateView(final LayoutInflater inflater,
-                                 final ViewGroup container, final Bundle savedInstanceState) {
-            final View v = inflater.inflate(R.layout.frag_gallery, null);
+        public List<AblumImageItem> selectFromDataSource(Bundle savedInstanceState) {
+            final List<AblumImageItem> list = new ArrayList<AblumImageItem>();
 
             String[] projection = new String[]{
                     MediaStore.Images.Media.DATA,
                     MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
                     MediaStore.Images.Media.BUCKET_ID};
             Cursor cur = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection,
-                    null, null, MediaStore.Images.Media.DATE_MODIFIED + " DESC");
+                    null, null,
+                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME + " ASC, " + MediaStore.Images.Media.DATE_MODIFIED + " DESC");
 
-            final List<Item> buckets = new ArrayList<Item>();
-            Item lastBucket = null;
-
+            AblumImageItem lastBucket = null;
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     while (!cur.isAfterLast()) {
                         if (lastBucket == null || !lastBucket.name.equals(cur.getString(1))) {
-                            lastBucket = new Item(cur.getString(0),
-                                    cur.getString(1), "", cur.getInt(2));
-                            buckets.add(lastBucket);
+                            lastBucket = new AblumImageItem(cur.getString(0),
+                                    cur.getString(1),  cur.getInt(2));
+                            list.add(lastBucket);
+                            lastBucket.images = 1;
+                            lastBucket.isFolder = true;
                         } else {
-                            lastBucket.size++;
+                            lastBucket.images++;
                         }
                         cur.moveToNext();
                     }
                 }
                 cur.close();
             }
-
-            ToastUtil.show(getActivity(), "" + buckets.size());
-
-            if (buckets.isEmpty()) {
-                //ToastUtil.show(getActivity() , R.string.no_images);
-                getActivity().finish();
-            } else {
-                mGirdView = v.findViewById(R.id.grid);
-                mGirdView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-
-            }
-            return v;
+            return list;
         }
     }//end inner class
 
-    private static class ItemViewHolder extends RecyclerView.ViewHolder {
-        public ItemViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
-        private List<Item> mDataList;
-        private LayoutInflater mLayoutInflater;
-
-        public ItemAdapter(List<Item> data) {
-            mDataList = data;
-        }
-
+    public static class ImagesFragment extends AblumSelectItemFragment{
         @Override
-        public ItemViewHolder onCreateViewHolder(ViewGroup viewGroup, int pos) {
-            return new ItemViewHolder(null);
-        }
+        public List<AblumImageItem> selectFromDataSource(Bundle savedInstanceState) {
 
-        @Override
-        public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int pos) {
+            Cursor cur = getActivity().getContentResolver()
+                    .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            new String[] { MediaStore.Images.Media.DATA,
+                                    MediaStore.Images.Media.DISPLAY_NAME,
+                                    MediaStore.Images.Media.SIZE },
+                            MediaStore.Images.Media.BUCKET_ID + " = ?",
+                            new String[] { String.valueOf(getArguments().getInt(BUCKET_ID)) },
+                            MediaStore.Images.Media.DATE_MODIFIED + " DESC");
 
-        }
-
-        @Override
-        public int getItemCount() {
-            return mDataList == null ? 0 : mDataList.size();
+            final List<AblumImageItem> images = new ArrayList<AblumImageItem>();
+            if (cur != null) {
+                if (cur.moveToFirst()) {
+                    while (!cur.isAfterLast()) {
+                        AblumImageItem item = new AblumImageItem(cur.getString(0),cur.getString(1));
+                        item.size = cur.getInt(2);
+                        item.isFolder = false;
+                        images.add(item);
+                        cur.moveToNext();
+                    }
+                }
+                cur.close();
+            }
+            return images;
         }
     }
 }//end class

@@ -61,10 +61,12 @@
 
         <activity
             android:name=".activity.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activity.RegisterActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
 
         <activity
