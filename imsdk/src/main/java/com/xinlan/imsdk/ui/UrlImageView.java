@@ -2,7 +2,7 @@ package com.xinlan.imsdk.ui;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.bumptech.glide.load.DataSource;
@@ -33,15 +33,15 @@ public class UrlImageView extends android.support.v7.widget.AppCompatImageView {
     }
 
     public void loadImageThumb(String imgUrl, int defaultImageId) {
-        GlideApp.with(getContext()).load(imgUrl + THUMB_SUFFIX).placeholder(defaultImageId).into(this);
+        GlideApp.with(getContext()).load(handleUrl(imgUrl,THUMB_SUFFIX)).placeholder(defaultImageId).into(this);
     }
 
     public void loadImageThumb(String imgUrl) {
-        GlideApp.with(getContext()).load(imgUrl + THUMB_SUFFIX).into(this);
+        GlideApp.with(getContext()).load(handleUrl(imgUrl,THUMB_SUFFIX)).into(this);
     }
 
     public void loadImageThumb(final String imgUrl ,final ILoadListener listener){
-        GlideApp.with(getContext()).load(imgUrl + THUMB_SUFFIX).listener(new RequestListener<Drawable>(){
+        GlideApp.with(getContext()).load(handleUrl(imgUrl,THUMB_SUFFIX)).listener(new RequestListener<Drawable>(){
             @Override
             public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 if(listener != null){
@@ -58,6 +58,12 @@ public class UrlImageView extends android.support.v7.widget.AppCompatImageView {
                 return false;
             }
         }).into(this);
+    }
+
+    private static String handleUrl(String originUrl , String suffix){
+        if(TextUtils.isEmpty(originUrl))
+            return originUrl;
+        return originUrl.endsWith(suffix)?originUrl:originUrl + suffix;
     }
 
     public void loadImage(String imgUrl) {

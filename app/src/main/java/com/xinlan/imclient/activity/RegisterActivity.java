@@ -50,7 +50,7 @@ public class RegisterActivity extends TActivity implements View.OnClickListener 
         mAvatarView = findViewById(R.id.avatar);
         mAvatarView.setOnClickListener(this);
 
-        mPickerHelper = new PickerImageHelper(this);
+        mPickerHelper = new PickerImageHelper(this , R.drawable.avatar_default);
     }
 
     @Override

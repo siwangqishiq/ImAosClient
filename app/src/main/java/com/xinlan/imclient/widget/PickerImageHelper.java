@@ -39,8 +39,12 @@ public class PickerImageHelper {
     private UrlImageView mUrlImageView;
     private ProgressBar mLoadingView;
 
-    public PickerImageHelper(FragmentActivity ctx) {
+    private int mDefaultAvatarId;
+    private String mImageUrl;
+
+    public PickerImageHelper(FragmentActivity ctx , int avatarImgRes) {
         mContext = ctx;
+        mDefaultAvatarId = avatarImgRes;
         mUrlImageView = mContext.findViewById(R.id.avatar);
         mLoadingView = mContext.findViewById(R.id.loading_view);
     }
@@ -59,6 +63,15 @@ public class PickerImageHelper {
                 pickerFromCamera();
             }
         });
+
+        if(!TextUtils.isEmpty(mImageUrl)){
+            dialog.addItem(mContext.getString(R.string.reset), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    reset();
+                }
+            });
+        }
         dialog.show(mContext.getSupportFragmentManager(), TAG);
     }
 
@@ -159,6 +172,7 @@ public class PickerImageHelper {
                             }
                         }
                     });
+                    mImageUrl = uplodaUrl;
                 }
             }
 
@@ -181,5 +195,14 @@ public class PickerImageHelper {
             }
         }//end for each
         return true;
+    }
+
+    private void reset(){
+        mImageUrl = null;
+        mUrlImageView.setImageResource(mDefaultAvatarId);
+    }
+
+    public String getImage(){
+        return mImageUrl;
     }
 }//end class
