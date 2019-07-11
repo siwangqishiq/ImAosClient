@@ -35,6 +35,7 @@ public class HttpClient {
     public static OkHttpClient client;
 
     private static IUpload uploader;
+
     static {
         client = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(false)
@@ -56,94 +57,94 @@ public class HttpClient {
     }
 
     public static <T> void sendPostRequest(String path, Map<String, Object> params,
-                                       final Context ctx, final ICallback<T> callback,final Class<T> type) {
+                                           final Context ctx, final ICallback<T> callback, final Class<T> type) {
         addCallback(ctx, callback);
 
         FormBody.Builder formBuilder = new FormBody.Builder();
         if (params != null) {
             for (String key : params.keySet()) {
-                formBuilder.add(key, params.get(key).toString());
+                formBuilder.add(key, params.get(key) != null ? params.get(key).toString() : "");
             }//end for each
         }
 
-        if(path.startsWith("/")){
+        if (path.startsWith("/")) {
             path = path.substring(1);
         }
 
         Request.Builder requestBuilder = new Request.Builder()
                 .url(Config.HTTP_SERVER + path).
-                post(formBuilder.build());
+                        post(formBuilder.build());
 
         Request request = requestBuilder.build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(final Call call,final IOException e) {
-                onError(ctx , StatusCode.NET_ERROR , e , callback);
+            public void onFailure(final Call call, final IOException e) {
+                onError(ctx, StatusCode.NET_ERROR, e, callback);
             }
 
             @Override
-            public void onResponse(Call call,final Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String resp = response.body().string();
                     LogUtil.log("http resp = " + resp);
-                    try{
-                        HttpResp respObj = JSON.parseObject(resp , HttpResp.class);
-                        if(respObj.getCode() == StatusCode.SUCCESS){
-                             T data = JSON.parseObject(respObj.getData() , type);
-                            onSuccess(ctx , callback , data);
-                        }else{
-                            onError(ctx , respObj.getCode() , new Exception(respObj.getMsg()), callback);
+                    try {
+                        HttpResp respObj = JSON.parseObject(resp, HttpResp.class);
+                        if (respObj.getCode() == StatusCode.SUCCESS) {
+                            T data = JSON.parseObject(respObj.getData(), type);
+                            onSuccess(ctx, callback, data);
+                        } else {
+                            onError(ctx, respObj.getCode(), new Exception(respObj.getMsg()), callback);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        onError(ctx ,  StatusCode.PARSE_DATA_ERROR, e, callback);
+                        onError(ctx, StatusCode.PARSE_DATA_ERROR, e, callback);
                     }
                 } else {
-                    onError(ctx , response.code() , null, callback);
+                    onError(ctx, response.code(), null, callback);
                 }
             }
         });
     }
 
-    private static <T> void onSuccess(final Context ctx , final ICallback<T> callback , final T data){
+    private static <T> void onSuccess(final Context ctx, final ICallback<T> callback, final T data) {
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (callbackRecords.get(ctx) != null && callback != null){
+                if (callbackRecords.get(ctx) != null && callback != null) {
                     callback.onSuccess(data);
                 }
-                removeCallback(ctx , callback);
+                removeCallback(ctx, callback);
             }
         });
     }
 
-    private static void onError(final Context ctx,final int code ,
-                                final Exception e ,final ICallback callback){
+    private static void onError(final Context ctx, final int code,
+                                final Exception e, final ICallback callback) {
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (callbackRecords.get(ctx) != null && callback != null){
-                    callback.onError( code, e);
+                if (callbackRecords.get(ctx) != null && callback != null) {
+                    callback.onError(code, e);
                 }
-                removeCallback(ctx , callback);
+                removeCallback(ctx, callback);
             }
         });
     }
 
-    public static void removeCallback(Context destoryCtx , ICallback cb) {
+    public static void removeCallback(Context destoryCtx, ICallback cb) {
         if (destoryCtx == null)
             return;
 
         final Set<ICallback> cbs = callbackRecords.get(destoryCtx);
         if (cbs != null) {
-            if(cb == null){
+            if (cb == null) {
                 LogUtil.log("remove callback " + destoryCtx);
-                for(ICallback c: cbs){
+                for (ICallback c : cbs) {
                     LogUtil.log("remove callback cb=  " + c);
                 }//end for each
                 callbackRecords.remove(destoryCtx);
-            }else if(cbs.contains(cb)){
+            } else if (cbs.contains(cb)) {
                 cbs.remove(cb);
             }
         }
@@ -159,7 +160,7 @@ public class HttpClient {
                 cbSets = new HashSet();
             }
             cbSets.add(cb);
-            callbackRecords.put(ctx , cbSets);
+            callbackRecords.put(ctx, cbSets);
         }
     }
 
@@ -170,8 +171,8 @@ public class HttpClient {
         builder.addHeader(TOKEN, null);
     }
 
-    public static IUpload getUploader(){
-        if(uploader == null){
+    public static IUpload getUploader() {
+        if (uploader == null) {
             uploader = new UploadImpl();
         }
         return uploader;

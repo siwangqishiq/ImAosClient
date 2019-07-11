@@ -202,7 +202,7 @@ public class PickerImageHelper {
         mUrlImageView.setImageResource(mDefaultAvatarId);
     }
 
-    public String getImage(){
+    public String getImageUrl(){
         return mImageUrl;
     }
 }//end class

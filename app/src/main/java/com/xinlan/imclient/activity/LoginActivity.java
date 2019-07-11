@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.xinlan.imclient.R;
 import com.xinlan.imsdk.Bean;
@@ -15,19 +18,65 @@ import com.xinlan.imsdk.core.TActivity;
  * 登录界面
  */
 public class LoginActivity extends TActivity {
+    private static final String EXTRA_ACCOUNT = "account";
+    private static final String EXTRA_PWD = "pwd";
 
     public static void start(Activity activity){
         Intent it = new Intent(activity , LoginActivity.class);
         activity.startActivity(it);
     }
 
+    public static void start(Activity activity , String account , String pwd){
+        Intent it = new Intent(activity , LoginActivity.class);
+        it.putExtra(EXTRA_ACCOUNT , account);
+        it.putExtra(EXTRA_PWD , pwd);
+        activity.startActivity(it);
+    }
+
+    private EditText mAccountText;
+    private EditText mPwdText;
+    private View mLoginBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        initToolbar();
+        initView();
+        parseIntent(getIntent());
+    }
+
+    protected void initToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle(R.string.login);
+    }
+
+    private void initView(){
+        mLoginBtn = findViewById(R.id.submit_btn);
+        mPwdText = findViewById(R.id.user_password);
+        mAccountText = findViewById(R.id.user_name);
+    }
+
+    protected void parseIntent(Intent intent){
+        if(intent == null)
+            return;
+
+        String defAccount = intent.getStringExtra(EXTRA_ACCOUNT);
+        if(!TextUtils.isEmpty(defAccount)){
+            mAccountText.setText(defAccount);
+        }
+
+        String defPwd = intent.getStringExtra(EXTRA_PWD);
+        if(!TextUtils.isEmpty(defPwd)){
+            mPwdText.setText(defPwd);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        parseIntent(intent);
     }
 
     @Override

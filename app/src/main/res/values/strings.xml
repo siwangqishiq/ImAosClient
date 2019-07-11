@@ -13,4 +13,10 @@
     <string name="picker_from_camera">拍摄照片</string>
     <string name="reset">重置</string>
     <string name="no_images">相册暂无图片</string>
+
+    <string name="error_account_empty">用户名不能为空</string>
+    <string name="error_pwd_empty">用户密码不能为空</string>
+    <string name="error_account_fatal">用户名只能包含字母，数字，中文</string>
+
+    <string name="register_success">注册成功</string>
 </resources>

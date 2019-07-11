@@ -37,6 +37,7 @@
         android:layout_marginLeft="@dimen/login_horizontal_margin"
         android:layout_marginTop="@dimen/login_vertical_margin"
         android:layout_marginRight="@dimen/login_horizontal_margin"
+        android:inputType="textPassword"
         android:hint="@string/password"
         android:maxLines="1"
         android:textSize="@dimen/text_size_normal"
