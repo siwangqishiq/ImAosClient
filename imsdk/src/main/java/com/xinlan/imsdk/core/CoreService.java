@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 public class CoreService extends Service {
     public static final String NAME = CoreService.class.getName();
 
-    public static final int NOTIFICATION_ID = 1024;
+    public static final int NOTIFICATION_ID = "CoreService".hashCode();
 
     public static final int REMOTE_MESSAGE_BIND = 1;
 
