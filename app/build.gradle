@@ -2,6 +2,30 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 
+ext{
+    loadProperty = { name ->
+        Properties properties = new Properties()
+        InputStream is = null
+        try {
+            is = new FileInputStream(name)
+            properties.load(is)
+        } catch (Throwable tr) {
+            tr.printStackTrace()
+            println tr.getMessage()
+        } finally {
+            if (is != null) {
+                try {
+                    is.close()
+                } catch (Throwable tr) {
+                    tr.printStackTrace()
+                }
+            }
+        }
+        return properties
+    }
+}
+
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -12,10 +36,40 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
+
+    signingConfigs {
+        debug {
+            Properties properties = loadProperty("${rootProject.getProjectDir()}/sign.properties")
+            storeFile file("${rootProject.getProjectDir()}/sign.jks")
+            storePassword properties.get('storepassword')
+            keyAlias properties.get('keyalias')
+            keyPassword properties.get('keypassword')
+
+            v2SigningEnabled true // enable v2 sign
+        }
+
         release {
-            minifyEnabled false
+            Properties properties = loadProperty('sign.properties')
+            storeFile file("${rootProject.getProjectDir()}/sign.jks")
+            storePassword properties.get('storepassword')
+            keyAlias properties.get('keyalias')
+            keyPassword properties.get('keypassword')
+            v2SigningEnabled true // enable v2 sign
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+
+        release {
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -42,3 +96,4 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
