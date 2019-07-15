@@ -9,6 +9,7 @@ public class User {
     private long uid;
     private String pwd;
     private int sex;
+    private String token;
 
     public String getAccount() {
         return account;
@@ -50,6 +51,14 @@ public class User {
         this.sex = sex;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -58,6 +67,7 @@ public class User {
                 ", uid=" + uid +
                 ", pwd='" + pwd + '\'' +
                 ", sex=" + sex +
+                ", token='" + token + '\'' +
                 '}';
     }
 }

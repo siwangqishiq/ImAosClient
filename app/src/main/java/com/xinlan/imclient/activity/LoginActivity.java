@@ -11,13 +11,21 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.xinlan.imclient.R;
+import com.xinlan.imclient.model.User;
+import com.xinlan.imclient.util.ToastUtil;
+import com.xinlan.imclient.widget.UserAccount;
 import com.xinlan.imsdk.Bean;
+import com.xinlan.imsdk.IMClient;
 import com.xinlan.imsdk.core.TActivity;
+import com.xinlan.imsdk.http.HttpClient;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 登录界面
  */
-public class LoginActivity extends TActivity {
+public class LoginActivity extends TActivity implements View.OnClickListener{
     private static final String EXTRA_ACCOUNT = "account";
     private static final String EXTRA_PWD = "pwd";
 
@@ -56,6 +64,8 @@ public class LoginActivity extends TActivity {
         mLoginBtn = findViewById(R.id.submit_btn);
         mPwdText = findViewById(R.id.user_password);
         mAccountText = findViewById(R.id.user_name);
+
+        mLoginBtn.setOnClickListener(this);
     }
 
     protected void parseIntent(Intent intent){
@@ -106,4 +116,42 @@ public class LoginActivity extends TActivity {
     public void onReceivedMsg(Bean bean) {
 
     }
+
+    protected void doLogin(){
+        final String account = mAccountText.getText().toString().trim();
+        final String pwd = mPwdText.getText().toString().trim();
+
+        Map<String , Object> params = new HashMap<String, Object>();
+        params.put("account" , account);
+        params.put("pwd" , pwd);
+        HttpClient.sendPostRequest("login" , params , this , new HttpClient.ICallback<User>() {
+            @Override
+            public void onError(int errorCode, Exception e) {
+                ToastUtil.show(LoginActivity.this , e.getMessage());
+            }
+
+            @Override
+            public void onSuccess(User resp) {
+                onLoignSccess(resp);
+            }
+        }, User.class);
+    }
+
+    public void onLoignSccess(User user){
+        if(user == null)
+            return;
+
+        UserAccount.sharedInstance().setValue(user);
+        MainActivity.start(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.submit_btn:
+                doLogin();
+                break;
+        }//end switch
+    }
+
 }//end class

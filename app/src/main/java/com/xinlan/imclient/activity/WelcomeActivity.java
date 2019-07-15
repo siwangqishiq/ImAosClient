@@ -25,6 +25,8 @@ public class WelcomeActivity extends TActivity {
     }
 
     private void skipToMain(Intent it) {
+        MainActivity.start(this);
+        this.finish();
     }
 
     /**

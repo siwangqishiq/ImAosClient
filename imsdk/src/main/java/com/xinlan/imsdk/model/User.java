@@ -14,6 +14,16 @@ public class User {
     private int state = STATE_NORMAL;
     private String extra;
 
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public long getId() {
         return id;
     }

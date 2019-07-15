@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.text.TextUtils;
 
 import com.xinlan.imsdk.core.CoreService;
 import com.xinlan.imsdk.core.KeepJobService;
@@ -34,7 +35,8 @@ public class IMClient {
     private Messenger mSerivceMessenger;
     private Messenger mUIMessenger;
     private RemoteHandler mActivityHandler;
-    private String account;
+    private String uid;
+    private String token;
 
 
     public static class Options{
@@ -67,8 +69,12 @@ public class IMClient {
         return options;
     }
 
-    public void init(final Application ctx , Options op){
+    public void init(final Application ctx , Options op , String token , String uid){
         options = op;
+
+        this.uid = uid;
+        this.token = token;
+
         if(ProcessUtil.isMainProcess(ctx)){//主UI进程
             startCoreService(ctx);
 
@@ -115,6 +121,14 @@ public class IMClient {
         }
     }
 
+    public void setUserLogin(String uid , String token){
+
+    }
+
+    public void setUserUnlogin(){
+
+    }
+
     private void scheduleJob(Context context){
         if(context == null)
             return;
@@ -137,8 +151,8 @@ public class IMClient {
         if(ProcessUtil.isServiceRunning(context , CoreService.NAME))
             return;
 
-//        if(!isLogin())//未登录
-//            return;
+        if(!isLogin())//未登录
+            return;
 
         Intent it = new Intent(context, CoreService.class);
 
@@ -210,10 +224,14 @@ public class IMClient {
     }
 
     public boolean isLogin(){
-        return false;
+        return !TextUtils.isEmpty(uid) && !TextUtils.isEmpty(token);
     }
 
-    public String getAccount(){
-        return account;
+    public String getUid(){
+        return uid;
+    }
+
+    public String getToken(){
+        return token;
     }
 } // end class

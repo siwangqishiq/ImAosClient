@@ -99,6 +99,7 @@ public class CoreService extends Service {
     private void coreMainLoop() {
         while (isRun) {
             LogUtil.log("core service is running ... " + count);
+            LogUtil.log("" + IMClient.getInstance().isLogin()+"  " +IMClient.getInstance().getUid());
             count++;
             try {
                 Thread.sleep(2000);

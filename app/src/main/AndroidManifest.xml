@@ -78,6 +78,12 @@
             android:name=".activity.SelectAblumActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".activity.MainActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.xinlan.imclient.fileprovider"
