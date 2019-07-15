@@ -18,25 +18,19 @@ public class MainActivity extends TActivity {
         context.startActivity(it);
     }
 
-    private TextView mText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mText = findViewById(R.id.text);
-        mText.setText(UserAccount.sharedInstance().uid);
     }
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         moveTaskToBack(true);
     }
 
     @Override
     public void onReceivedMsg(Bean bean) {
-        mText.setText(bean.content);
     }
 }

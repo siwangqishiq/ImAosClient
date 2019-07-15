@@ -16,6 +16,9 @@ import com.xinlan.imsdk.core.TActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 从相册选择
+ */
 public class SelectAblumActivity extends TActivity {
     public static final String RESULT_PATH = "path";
     public static final String RESULT_SIZE = "size";
