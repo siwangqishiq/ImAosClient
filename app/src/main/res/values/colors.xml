@@ -8,4 +8,5 @@
     <color name="gray">#f3eeeb</color>
     <color name="drak_gray">#133337</color>
     <color name="half_drak_gray">#7f133337</color>
+    <color name="soft_gray">#eeeeee</color>
 </resources>

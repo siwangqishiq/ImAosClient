@@ -4,4 +4,8 @@
     <dimen name="login_vertical_margin">32dp</dimen>
     <dimen name="text_size_normal">20sp</dimen>
     <dimen name="text_size_small">16sp</dimen>
+
+    <dimen name="indicator_margin_top">10dp</dimen>
+    <dimen name="indicator_text_margin_top">3dp</dimen>
+    <dimen name="indicator_image_size">28dp</dimen>
 </resources>

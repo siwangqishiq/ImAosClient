@@ -9,17 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xinlan.imclient.R;
-import com.xinlan.imsdk.Bean;
 
 /**
  * 最近联系人
  *
  */
-public class RecentListFragment extends MainTabFragment {
+public class SettingFragment extends MainTabFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_recent_list , container , false);
+        final View rootView = inflater.inflate(R.layout.fragment_self , container , false);
         return rootView;
     }
-
 }//end class

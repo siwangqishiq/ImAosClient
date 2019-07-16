@@ -1,8 +1,8 @@
 package com.xinlan.imsdk.core;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.xinlan.imsdk.Bean;
 import com.xinlan.imsdk.util.LogUtil;
@@ -11,15 +11,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-public abstract class TActivity extends AppCompatActivity {
+public abstract class TFragment extends Fragment {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -28,10 +28,6 @@ public abstract class TActivity extends AppCompatActivity {
     public void receivedMsg(Bean bean){
         LogUtil.log("get bean " + bean);
         onReceivedMsg(bean);
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
     }
 
     public abstract void onReceivedMsg(Bean bean);

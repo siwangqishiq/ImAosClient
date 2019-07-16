@@ -19,4 +19,8 @@
     <string name="error_account_fatal">用户名只能包含字母，数字，中文</string>
 
     <string name="register_success">注册成功</string>
+
+    <string name="msg">消息</string>
+    <string name="contacts">通讯录</string>
+    <string name="setting">设置</string>
 </resources>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_container"
+    android:layout_width="match_parent"
+    android:layout_height="63dp"
+    android:background="@color/soft_gray"
+    android:orientation="horizontal"
+    android:padding="0dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/recent_icon"
+            android:layout_width="@dimen/indicator_image_size"
+            android:layout_height="@dimen/indicator_image_size"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/indicator_margin_top"
+            android:scaleType="centerInside"
+            android:src="@drawable/indicator_msg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recent_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/indicator_text_margin_top"
+            android:text="@string/msg"
+            android:textColor="@color/drak_gray"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/contacts_icon"
+            android:layout_width="@dimen/indicator_image_size"
+            android:layout_height="@dimen/indicator_image_size"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/indicator_margin_top"
+            android:scaleType="centerInside"
+            android:src="@drawable/indicator_contacts" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contacts_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/indicator_text_margin_top"
+            android:text="@string/contacts"
+            android:textColor="@color/drak_gray"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/setting_icon"
+            android:layout_width="@dimen/indicator_image_size"
+            android:layout_height="@dimen/indicator_image_size"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/indicator_margin_top"
+            android:scaleType="centerInside"
+            android:src="@drawable/indicator_setting" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/setting_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/indicator_text_margin_top"
+            android:text="@string/setting"
+            android:textColor="@color/drak_gray"
+            android:textSize="12sp" />
+    </RelativeLayout>
+</LinearLayout>
