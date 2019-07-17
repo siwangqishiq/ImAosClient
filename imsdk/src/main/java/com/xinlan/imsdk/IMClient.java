@@ -227,6 +227,10 @@ public class IMClient {
         return !TextUtils.isEmpty(uid) && !TextUtils.isEmpty(token);
     }
 
+    public void setToken(final String t){
+        token = t;
+    }
+
     public String getUid(){
         return uid;
     }

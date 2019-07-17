@@ -3,9 +3,11 @@ package com.xinlan.imsdk.http;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.xinlan.imsdk.Config;
+import com.xinlan.imsdk.IMClient;
 import com.xinlan.imsdk.util.LogUtil;
 
 import java.io.IOException;
@@ -25,10 +27,14 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * 发起Http请求
+ *
+ */
 public class HttpClient {
     public static final String UA = "User-Agent";
     public static final String UA_VALUE = "Android;xinlan_imclient";
-    public static final String TOKEN = "token";
+    public static final String AUTH_TOKEN = "auth_token";
 
     public static final long TIMEOUT = 30 * 1000;
 
@@ -75,6 +81,7 @@ public class HttpClient {
                 .url(Config.HTTP_SERVER + path).
                         post(formBuilder.build());
 
+        addHeaders(requestBuilder);
         Request request = requestBuilder.build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -91,8 +98,13 @@ public class HttpClient {
                     try {
                         HttpResp respObj = JSON.parseObject(resp, HttpResp.class);
                         if (respObj.getCode() == StatusCode.SUCCESS) {
-                            T data = JSON.parseObject(respObj.getData(), type);
-                            onSuccess(ctx, callback, data);
+                            if(isJsonStr(respObj.getData())){
+                                T data = JSON.parseObject(respObj.getData(), type);
+                                onSuccess(ctx, callback, data);
+                            }else{
+                                T data = genBaseType(respObj.getData() , type);
+                                onSuccess(ctx, callback, data);
+                            }
                         } else {
                             onError(ctx, respObj.getCode(), new Exception(respObj.getMsg()), callback);
                         }
@@ -105,6 +117,30 @@ public class HttpClient {
                 }
             }
         });
+    }
+
+    private static  <T> T genBaseType(String resp , Class T){
+        if(T == String.class){
+            return (T)resp;
+        }else if(T == Integer.class){
+            return (T)(new Integer(resp));
+        }else if(T == Float.class){
+            return (T)(new Float(resp));
+        }else if(T == Boolean.class){
+            return (T)(new Boolean(resp));
+        }else if(T == Byte.class){
+            return (T)(new Byte(resp));
+        }else{
+            return (T)resp;
+        }
+    }
+
+    private static boolean isJsonStr(final String str){
+        if(TextUtils.isEmpty(str))
+            return false;
+
+        String strTrim = str.trim();
+        return strTrim.startsWith("{") && strTrim.endsWith("}") || strTrim.startsWith("[") && strTrim.endsWith("]");
     }
 
     private static <T> void onSuccess(final Context ctx, final ICallback<T> callback, final T data) {
@@ -167,8 +203,11 @@ public class HttpClient {
     private final static void addHeaders(Request.Builder builder) {
         if (builder == null)
             return;
+
         builder.addHeader(UA, UA_VALUE);
-        builder.addHeader(TOKEN, null);
+        if(!TextUtils.isEmpty(IMClient.getInstance().getToken())){
+            builder.addHeader(AUTH_TOKEN, IMClient.getInstance().getToken());
+        }
     }
 
     public static IUpload getUploader() {

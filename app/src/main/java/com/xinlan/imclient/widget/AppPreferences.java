@@ -35,9 +35,6 @@ public class AppPreferences {
     }
 
     public static String getToken(){
-        if(!TextUtils.isEmpty(UserAccount.sharedInstance().token))
-            return UserAccount.sharedInstance().token;
-
         return SharePreUtil.getAccountString(SP_AUTH_TOKEN);
     }
 }

@@ -1,6 +1,9 @@
 package com.xinlan.imclient.widget;
 
+import android.text.TextUtils;
+
 import com.xinlan.imclient.model.User;
+import com.xinlan.imsdk.IMClient;
 
 public class UserAccount {
     private UserAccount(){
@@ -8,6 +11,7 @@ public class UserAccount {
 
     public String token;
     public String uid;
+
     public int sex;
     public String avatar;
     public User rawUser;
@@ -20,12 +24,12 @@ public class UserAccount {
     public void initAccount(){
         User user = AppPreferences.readAccount();
         if(user != null){
-            rawUser = user;
-
-            token = user.getToken();
             uid = String.valueOf(user.getUid());
             sex = user.getSex();
             avatar = user.getAvatar();
+            rawUser = user;
+
+            token = AppPreferences.getToken();
         }
     }
 
@@ -35,7 +39,14 @@ public class UserAccount {
         avatar = user.getAvatar();
         token = user.getToken();
 
+        IMClient.getInstance().setToken(token);
         AppPreferences.saveAccount(user);
+        AppPreferences.saveToken(token);
+    }
+
+    public void saveToken(final String token){
+        this.token = token;
+        IMClient.getInstance().setToken(token);
         AppPreferences.saveToken(token);
     }
 
@@ -47,5 +58,9 @@ public class UserAccount {
         rawUser = null;
         AppPreferences.saveAccount(null);
         AppPreferences.saveToken(null);
+    }
+
+    public boolean isValidate(){
+        return !TextUtils.isEmpty(token) && !TextUtils.isEmpty(uid);
     }
 }
