@@ -23,9 +23,7 @@ import com.xinlan.imsdk.core.KeepJobService;
 import com.xinlan.imsdk.http.HttpClient;
 import com.xinlan.imsdk.util.LogUtil;
 import com.xinlan.imsdk.util.ProcessUtil;
-
 import org.greenrobot.eventbus.EventBus;
-
 import java.util.concurrent.TimeUnit;
 
 public class IMClient {

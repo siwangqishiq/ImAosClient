@@ -13,7 +13,7 @@ import com.xinlan.imsdk.core.TActivity;
 import com.xinlan.imsdk.http.HttpClient;
 
 /**
- *
+ * enter point
  */
 public class WelcomeActivity extends TActivity {
     private Handler mainHandler = new Handler(Looper.getMainLooper());

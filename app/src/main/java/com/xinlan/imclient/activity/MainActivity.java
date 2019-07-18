@@ -29,7 +29,7 @@ public class MainActivity extends TActivity {
 
     public static void start(Activity context) {
         Intent it = new Intent(context, MainActivity.class);
-        it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        //it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(it);
     }
 
